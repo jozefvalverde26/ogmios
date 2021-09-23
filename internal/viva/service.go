@@ -1,4 +1,4 @@
-package sky
+package viva
 
 import (
 	"encoding/json"
@@ -22,7 +22,7 @@ func NewService(config Config) Service {
 }
 
 func (s Service) Feed(cur *mongo.Cursor) {
-	var setting domain.SkySetting
+	var setting domain.VivaSetting
 	err := cur.Decode(&setting)
 	if err != nil {
 		log.Fatal(err)
@@ -30,7 +30,6 @@ func (s Service) Feed(cur *mongo.Cursor) {
 	reqURL, _ := url.Parse(s.config.FeedURL)
 	headers := map[string][]string{
 		"Content-Type": {"application/json; charset=UTF-8"},
-		"_token":       {s.config.FeedToken},
 	}
 	jsonStr, _ := json.Marshal(setting)
 	fmt.Printf("%s\n", jsonStr)

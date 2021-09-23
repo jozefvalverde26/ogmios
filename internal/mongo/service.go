@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/jozefvalverde26/ogmios/internal/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -28,20 +27,24 @@ func NewService(config Config) Service {
 	return Service{collection}
 }
 
-func (s Service) FindAllProviders() map[string]domain.SkySetting {
-	mappper := make(map[string]domain.SkySetting)
+type Result struct {
+	Provider string `json:"provider"`
+}
+
+func (s Service) FindAllProviders() map[string]*mongo.Cursor {
+	mappper := make(map[string]*mongo.Cursor)
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	cur, curError := s.collection.Find(ctx, bson.D{})
 	if curError != nil {
 		panic(curError)
 	}
 	for cur.Next(ctx) {
-		var setting domain.SkySetting
-		err := cur.Decode(&setting)
+		var res Result
+		err := cur.Decode(&res)
 		if err != nil {
 			log.Fatal(err)
 		}
-		mappper[setting.Provider] = setting
+		mappper[res.Provider] = cur
 	}
 	return mappper
 }

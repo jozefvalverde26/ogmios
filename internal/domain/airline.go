@@ -1,5 +1,7 @@
 package domain
 
+import "go.mongodb.org/mongo-driver/mongo"
+
 type Airline interface {
-	Feed(setting SkySetting)
+	Feed(setting *mongo.Cursor)
 }

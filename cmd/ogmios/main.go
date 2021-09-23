@@ -9,6 +9,7 @@ import (
 	"github.com/jozefvalverde26/ogmios/internal/domain"
 	"github.com/jozefvalverde26/ogmios/internal/mongo"
 	"github.com/jozefvalverde26/ogmios/internal/sky"
+	"github.com/jozefvalverde26/ogmios/internal/viva"
 )
 
 func main() {
@@ -25,6 +26,11 @@ func main() {
 	}
 	skyService := sky.NewService(skyConfig)
 
+	vivaConfig := viva.Config{
+		FeedURL: os.Getenv("VIVA_FEED_URL"),
+	}
+	vivaService := viva.NewService(vivaConfig)
+
 	mongoConfig := mongo.Config{
 		Uri:        os.Getenv("MONGO_URI"),
 		Db:         os.Getenv("MONGO_DB_NAME"),
@@ -32,7 +38,7 @@ func main() {
 	}
 	mongoService := mongo.NewService(mongoConfig)
 
-	providers := []domain.Airline{skyService}
+	providers := []domain.Airline{skyService, vivaService}
 	collectorService := collector.NewService(mongoService, providers)
 	collectorService.Process()
 }
