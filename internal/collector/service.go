@@ -15,5 +15,5 @@ func NewService(setting domain.AirlineSetting, providers []domain.Airline) Servi
 
 func (s Service) Process() {
 	airlineSettings := s.setting.FindAllProviders()
-	s.providers[1].Feed(airlineSettings["viva"])
+	s.providers[2].Feed(airlineSettings["latam"])
 }

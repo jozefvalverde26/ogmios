@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/jozefvalverde26/ogmios/internal/collector"
 	"github.com/jozefvalverde26/ogmios/internal/domain"
+	"github.com/jozefvalverde26/ogmios/internal/latam"
 	"github.com/jozefvalverde26/ogmios/internal/mongo"
 	"github.com/jozefvalverde26/ogmios/internal/sky"
 	"github.com/jozefvalverde26/ogmios/internal/viva"
@@ -31,6 +32,10 @@ func main() {
 	}
 	vivaService := viva.NewService(vivaConfig)
 
+	latamConfig := latam.Config{
+		FeedURL: os.Getenv("LATAM_FEED_URL"),
+	}
+	latamService := latam.NewService(latamConfig)
 	mongoConfig := mongo.Config{
 		Uri:        os.Getenv("MONGO_URI"),
 		Db:         os.Getenv("MONGO_DB_NAME"),
@@ -38,7 +43,7 @@ func main() {
 	}
 	mongoService := mongo.NewService(mongoConfig)
 
-	providers := []domain.Airline{skyService, vivaService}
+	providers := []domain.Airline{skyService, vivaService, latamService}
 	collectorService := collector.NewService(mongoService, providers)
 	collectorService.Process()
 }
