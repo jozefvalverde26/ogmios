@@ -37,13 +37,16 @@ func main() {
 	}
 	latamService := latam.NewService(latamConfig)
 	mongoConfig := mongo.Config{
-		Uri:        os.Getenv("MONGO_URI"),
-		Db:         os.Getenv("MONGO_DB_NAME"),
-		Collection: os.Getenv("MONGO_COLLECTION_NAME"),
+		Uri: os.Getenv("MONGO_URI"),
+		Db:  os.Getenv("MONGO_DB_NAME"),
 	}
 	mongoService := mongo.NewService(mongoConfig)
 
-	providers := []domain.Airline{skyService, vivaService, latamService}
+	providers := map[string]domain.Airline{
+		"sky":   skyService,
+		"viva":  vivaService,
+		"latam": latamService,
+	}
 	collectorService := collector.NewService(mongoService, providers)
 	collectorService.Process()
 }

@@ -23,7 +23,7 @@ func NewService(config Config) Service {
 	return Service{config}
 }
 
-func (s Service) Feed(cur *mongo.Cursor) {
+func (s Service) Feed(cur *mongo.SingleResult) []byte {
 	var setting domain.LatamSetting
 	err := cur.Decode(&setting)
 	if err != nil {
@@ -74,5 +74,5 @@ func (s Service) Feed(cur *mongo.Cursor) {
 	//close response body
 	res.Body.Close()
 
-	fmt.Printf("%s\n", data)
+	return data
 }
